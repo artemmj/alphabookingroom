@@ -1,0 +1,171 @@
+﻿@model List<Room>
+@{
+    ViewData["Title"] = "Комнаты";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        @if (ViewBag.Role == 0)
+        {
+            <form method="get" action="/Home/EditUser">
+                <input type="submit" value="Редактировать пользователей" />
+            </form>
+        }
+    </div>
+    <div class="panel-heading">
+        <h3 class="panel-title">Список комнат</h3>
+    </div>
+    <div class="panel-body">
+        <!-- Вывод списка всех комнат -->
+        <ul class="list-group">
+            @foreach (var room in Model)
+            {
+                <li class="list-group-item">
+                    <p><b>Комната @room.Name</b></p>
+                    <form method="get" action="/Home/RoomInfo">
+                        <p>
+                        <input type="hidden" value=@room.Id name="roomId" />
+                        <input type="submit" value="Подробнее" />
+                        </p>
+                    </form>
+                    @if (ViewBag.Role == 0)
+                    {
+                    <form mehod="get" action="/Home/EditRoom">
+                        <p>
+                            <input type="hidden" value=@room.Id name="roomId" />
+                            <input type="submit" value="Редактировать" />
+                        </p>
+                    </form>
+
+                    }
+                    <p>
+                        @room.SeatsNumber мест
+                    <p>
+                        Наличие проектора:
+                        @if (room.HasProjector)
+                        {
+                            <img src="~/images/projector.png" />
+                        }
+                        else
+                        {
+                            <img src="~/images/noprojector.png" />
+                        }
+                    <p>
+                        Наличие доски:
+                        @if (room.HasTable)
+                        {
+                            <img src="~/images/table.png" />
+                        }
+                        else
+                        {
+                            <img src="~/images/notable.png" />
+
+                        }
+                    <p>
+                        @if (room.BookingTimes.Count == 0)
+                        {
+                            @:Нет брони
+                        }
+                        else
+                        {
+                            @room.BookingTimes.Last().EndTime @:: @room.BookingTimes.Last().Description
+                        }
+                </li>
+            }
+        </ul>
+    </div>
+
+    @if (ViewBag.Role == 0)
+    {
+        <div class="panel-heading">
+            <h3 class="panel-title">Заявки на бронь:</h3>
+        </div>
+        <div>
+            <ul class="list-group" id="bookingRequests"></ul>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        AjaxSetNewRequests();
+    })
+
+    // Функция выполняет ajax-запрос каждые 10 секунд
+    setInterval(AjaxSetNewRequests(), 10000);
+
+    // Для возможности отдельного выполнения
+    // (при первой загрузке и при подтверждении / отклонении заявки)
+    function AjaxSetNewRequests() {
+        $.ajax({
+            url: '/Home/GetNewRequests',
+            type: 'GET',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                SetNewRequests(data)
+            }
+        })
+    }
+
+    // Сама функция обновления списка неподтвержденных заявок на бронь
+    function SetNewRequests(data) {
+        var newHtml = "";
+        for (var i = 0; i < data.length; i++) {
+            if (data[i] === null)
+                continue;
+            newHtml += '<li class="list-group-item">' +
+                '<p>' + data[i].StartTime + ' - ' + data[i].EndTime + '</p><p>' + data[i].Description + '</p>' +
+                '<p>' + 'Комната ' + data[i].Room.Name + '</p>' +
+                '<p>' +
+                '<button id="confirmBtn" data-id="' + data[i].Id + '" onclick="ConfirmTime(this)">Подтвердить</button>' +
+                '<button id="notConfirmBtn" data-id="' + data[i].Id + '" onclick="NotConfirmTime(this)">Отклонить</button>' +
+                '</p >' +
+                '</li>';
+        }
+        $('#bookingRequests').html(newHtml);
+    }
+
+    // Обработчик кнопки подтверждения времени
+    function ConfirmTime(el) {
+        var id = $(el).attr('data-id');
+        $.ajax({
+            url: '/Home/ConfirmTime/' + id,
+            type: 'PUT',
+            success: function () {
+                alert("Заявка подтверждена");
+                $.ajax({
+                    url: '/Home/GetNewRequests',
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        SetNewRequests(data)
+                    }
+                })
+            }
+        })
+    }
+
+    // Обработчик кнопки отклонения времени
+    function NotConfirmTime(el) {
+        var id = $(el).attr('data-id');
+        $.ajax({
+            url: '/Home/NotConfirmTime/' + id,
+            type: 'PUT',
+            success: function () {
+                alert("Заявка удалена");
+                $.ajax({
+                    url: '/Home/GetNewRequests',
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        SetNewRequests(data)
+                    }
+                })
+            }
+        })
+    }
+
+</script>

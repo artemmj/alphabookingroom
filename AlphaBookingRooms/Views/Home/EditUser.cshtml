@@ -1,0 +1,34 @@
+﻿@model List<User>
+@{
+    ViewData["Title"] = "EditUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<ul class="list-group">
+    @foreach (User user in Model)
+    {
+    <li class="list-group-item">
+        <form method="post" action="/Home/EditUser">
+
+            @user.Email -
+            @if (user.Role == 0)
+            {
+                @: Менеджер
+            }
+            else
+            {
+                @: Сотрудник
+            }
+            <input value="@user.Id" name="userId" type="hidden" />
+            <p>
+                <select name="roleId">
+                    <option disabled selected>Выберите роль</option>
+                    <option value="0" name="roleId">Менеджер</option>
+                    <option value="1" name="roleId">Сотрудник</option>
+                </select>
+            </p>
+            <p><input type="submit" value="Отправить"></p>
+        </form>
+    </li>
+    }
+</ul>

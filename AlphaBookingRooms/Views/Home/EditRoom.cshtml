@@ -1,0 +1,52 @@
+﻿@model Room
+@{
+    ViewData["Title"] = "EditRoom";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" action="/Home/EditRoom" class="form-horizontal">
+    <div>
+        <input type="hidden" name="roomId" value="@Model.Id" />
+        <p>Редактировать информацию о комнате:</p>
+        <div class="form-group">
+            <label for="roomName" class="col-md-2 control-label">Название:</label>
+            <div class="col-md-4">
+                <input type="text" name="roomName" class="form-control" value="@Model.Name" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="seatsNumber" class="col-md-2 control-label">Мест:</label>
+            <div class="col-md-4">
+                <input type="number" name="seatsNumber" class="form-control" value="@Model.SeatsNumber" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description" class="col-md-2 control-label">Описание:</label>
+            <div class="col-md-4">
+                <input type="text" name="description" class="form-control" value="@Model.Description" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Отправить" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- 
+    Вынесено, потому что unput-тег некорректно отсылает на сервер значение checkbox - всегда приходит false...
+
+<div class="form-group">
+    <label for="hasProjector" class="col-md-2 control-label">Проектор:</label>
+    <div class="col-md-1">
+        <input type="checkbox" name="hasProjector" value="@Model.HasProjector" checked="checked"/>
+    </div>
+</div>
+<div class="form-group">
+    <label for="hasTable" class="col-md-2 control-label">Доска:</label>
+    <div class="col-md-1">
+        <input type="checkbox" name="hasTable" value="@Model.HasTable" checked="checked"/>
+    </div>
+</div>
+-->

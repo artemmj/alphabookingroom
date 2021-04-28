@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "BookARoom";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (!String.IsNullOrEmpty(@ViewBag.TimeBusy))
+{
+    <h3><font color="red">@ViewBag.TimeBusy</font></h3>
+}
+
+<h2>Выберите период бронирования комнаты:</h2>
+
+<form method="post" action="/Home/BookARoom">
+    <input type="hidden" value=@ViewBag.RoomId name="roomId" />
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker1">
+                    <input type="text" class="form-control" name="StartTime" />
+                    <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker2">
+                    <input type="text" class="form-control" name="EndTime" />
+                    <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <label for="Description" class="col-md-2">Описание:</label>
+        <div class="col-md-4">
+            <input type="text" name="Description" class="form-control" />
+        </div>
+        <p></p>
+        <div class="col-md-4">
+            <input type="submit" value="Выбрать время" />
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#datetimepicker1").datetimepicker({
+                locale: 'ru'
+            });
+            $("#datetimepicker2").datetimepicker({
+                useCurrent: false,
+                locale: 'ru'
+            });
+            $("#datetimepicker1").on("dp.change", function (e) {
+                $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+            });
+            $("#datetimepicker2").on("dp.change", function (e) {
+                $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+            });
+        });
+    </script>
+</form>

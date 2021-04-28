@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <!-- CSS-файл библиотеки Bootstrap 3 DateTimePicker -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-datetimepicker.min.css" />
+    <!-- библиотеку jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- библиотеку moment -->
+    <script src="~/lib/moment/moment-with-locales.min.js"></script>
+    <!-- js-файл фреймворка Bootstrap 3 -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- js-файл библиотеки Bootstrap 3 DateTimePicker -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap-datetimepicker.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="/Home/Index">Домой</a></li>
+                    <li><a href="/Account/Logout">Выйти</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>© Alpha Booking</p>
+        </footer>
+    </div>
+</body>
+</html>
